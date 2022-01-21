@@ -1,14 +1,14 @@
-# ssh_example
+# App Flutter para conexão e execução de comandos e scripts com protocolo SSH.
 
-Demonstrates how to use the ssh plugin.
+Abaixo as instruções para colocar o projeto em execução:
 
-## Install 
+## Comando para baixar os packages
 
 ```
-flutter packages get
+flutter pub get
 ```
 
-## Run
+## Executar aplicação
 
 ```
 flutter run
