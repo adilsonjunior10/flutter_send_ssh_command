@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
   //CONFIGURACAO DE CONEXAO SSH
   final String username = 'admin'; //USUARIO SSH
   final String password = 'admin'; //SENHA SSH
-  final int port = 1307; //PORTA DE CONEXAO
+  final int port = 22; //PORTA DE CONEXAO
 
   @override
   Widget build(BuildContext context) {
@@ -160,9 +160,11 @@ class _MyAppState extends State<MyApp> {
   // FUNCAO REALIZA O SCAN DE IPs NA REDE.
   Future<void> escanearRede() async {
     ScaffoldMessenger.of(context).showSnackBar(Snackbar().snackBarIpLoading);
+    bool _exitLoop = false;
     for (var ip in _ips) {
-      await Socket.connect(ip, 80, timeout: Duration(seconds: 1)).then((socket) {
+      await Socket.connect(ip, 80, timeout: Duration(seconds: 3)).then((socket) {
         setState(() {
+          _exitLoop = true;
           _isIpOnline = true;
           _ipFound = ip;
         });
@@ -171,6 +173,7 @@ class _MyAppState extends State<MyApp> {
       }).catchError((error) {
         print("Exceção no socket ${error.toString()}");
       });
+      if (_exitLoop == true) break;
     }
 
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -198,7 +201,7 @@ class _MyAppState extends State<MyApp> {
     try {
       result = await client.connect() ?? 'Nulo';
       print(result);
-      if (result == "session_connected") result = await client.execute("./root/gac/desbloqueia.sh") ?? 'Nulo';
+      if (result == "session_connected") result = await client.execute("ps") ?? 'Nulo';
       await client.disconnect();
     } on PlatformException catch (e) {
       String errorMessage = 'Erro: ${e.code}\nMensagem de erro: ${e.message}';
@@ -223,7 +226,7 @@ class _MyAppState extends State<MyApp> {
 
     try {
       result = await client.connect() ?? 'Nulo';
-      if (result == "session_connected") result = await client.execute("./root/gac/desbloqueia.sh") ?? 'Nulo';
+      if (result == "session_connected") result = await client.execute("ls") ?? 'Nulo';
       await client.disconnect();
     } on PlatformException catch (e) {
       String errorMessage = 'Erro: ${e.code}\nMensagem de erro: ${e.message}';
